@@ -43,6 +43,8 @@ class User
 	key :first_name, String
 	key :last_name, String
 	
+	many :embedded_items
+	
 	versioned
 	
 	def name
@@ -56,4 +58,9 @@ class User
 end
 
 class MyCustomVersion < MongoMapper::Plugins::VestalVersions::Version
+end
+
+class EmbeddedItem
+  include MongoMapper::EmbeddedDocument
+  key :title, String
 end

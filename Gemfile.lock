@@ -54,13 +54,8 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
-    mm_dirtier (0.1.1)
-      observables (~> 0.1.2)
     mongo (1.1.2)
       bson (>= 1.1.1)
-    observables (0.1.2)
-      activesupport (~> 3.0.0)
-      i18n
     plucky (0.3.6)
       mongo (~> 1.1)
     polyglot (0.3.1)
@@ -99,7 +94,6 @@ PLATFORMS
 
 DEPENDENCIES
   bson_ext
-  mm_dirtier
   mongo (~> 1.1.1)
   mongo_mapper!
   rails (= 3.0.1)
