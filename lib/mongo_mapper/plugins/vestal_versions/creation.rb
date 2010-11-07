@@ -61,7 +61,7 @@ module MongoMapper::Plugins::VestalVersions
           
           # automic update
           v.changes = v.changes.append_changes(version_changes)
-          v.update_at = Time.now.utc
+          v.updated_at = Time.now.utc
           self.class.set({:_id => id, "versions.number" => v.number}, "versions.$.changes" => v.changes)
           
           reset_version_changes
@@ -79,7 +79,7 @@ module MongoMapper::Plugins::VestalVersions
             when vestal_versions_options[:only] then self.attributes.keys & vestal_versions_options[:only]
             when vestal_versions_options[:except] then self.attributes.keys - vestal_versions_options[:except]
             else self.attributes.keys
-          end - %w(created_at created_on updated_at updated_on versions _id)
+          end - %w(created_at created_on updated_at updated_on versions _id _type)
         end
 
         # Specifies the attributes used during version creation. This is separated into its own
