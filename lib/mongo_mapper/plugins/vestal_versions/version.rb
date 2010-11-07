@@ -4,8 +4,6 @@ module MongoMapper::Plugins::VestalVersions
     include Comparable
     include MongoMapper::EmbeddedDocument
     
-    plugin MongoMapper::Plugins::Timestamps
-
     # version number
     key :number, Integer, :default => 1
     
@@ -14,21 +12,12 @@ module MongoMapper::Plugins::VestalVersions
     
     # tags
     key :tag, String
-    
-    # time info
-    timestamps!
 
-
-
-    # ActiveRecord::Base#changes is an existing method, so before serializing the +changes+ column,
-    # the existing +changes+ method is undefined. The overridden +changes+ method pertained to 
-    # dirty attributes, but will not affect the partial updates functionality as that's based on
-    # an underlying +changed_attributes+ method, not +changes+ itself.
-    # undef_method :changes
-    # serialize :changes, Hash
-
-
-
+    # timestamps
+    # these needs to be set manually, not through callback
+    # to handle creating versions on update_attributes
+    key :created_at, Time
+    key :updated_at, Time
 
     # In conjunction with the included Comparable module, allows comparison of version records
     # based on their corresponding version numbers and creation timestamps.
