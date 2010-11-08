@@ -25,7 +25,7 @@ module MongoMapper::Plugins::VestalVersions
         options.symbolize_keys!
         options.reverse_merge!(Configuration.options)
         options.reverse_merge!(
-          :class => Version,
+          :class => MongoMapper::Plugins::VestalVersions::Version,
           :dependent => :delete_all
         )
         options.reverse_merge!(
@@ -36,7 +36,7 @@ module MongoMapper::Plugins::VestalVersions
         self.vestal_versions_options = options.dup
 
         options.merge!(
-          # :as => :versioned,
+          :as => :versioned,
           :extend => Array(options[:extend]).unshift(Versions)
         )
       end

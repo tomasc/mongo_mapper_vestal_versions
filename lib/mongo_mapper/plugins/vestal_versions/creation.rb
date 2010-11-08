@@ -40,7 +40,7 @@ module MongoMapper::Plugins::VestalVersions
 
         # Creates a new version upon updating the parent record.
         def create_version
-          versions.build(version_attributes)
+          versions.create(version_attributes)
           reset_version_changes
           reset_version
         end
@@ -55,15 +55,8 @@ module MongoMapper::Plugins::VestalVersions
         # Updates the last version's changes by appending the current version changes.
         def update_version
           return create_version unless v = versions.last
-          
-          # v.changes_will_change!
-          # v.update_attribute(:changes, v.changes.append_changes(version_changes))
-          
-          # automic update
-          v.changes = v.changes.append_changes(version_changes)
-          v.updated_at = Time.now.utc
-          self.class.set({:_id => id, "versions.number" => v.number}, "versions.$.changes" => v.changes)
-          
+          v.changes_will_change!
+          v.update_attribute(:changes, v.changes.append_changes(version_changes))          
           reset_version_changes
           reset_version
         end
@@ -79,14 +72,13 @@ module MongoMapper::Plugins::VestalVersions
             when vestal_versions_options[:only] then self.attributes.keys & vestal_versions_options[:only]
             when vestal_versions_options[:except] then self.attributes.keys - vestal_versions_options[:except]
             else self.attributes.keys
-          end - %w(created_at created_on updated_at updated_on versions _id _type)
+          end - %w(created_at created_on updated_at updated_on _id)
         end
 
         # Specifies the attributes used during version creation. This is separated into its own
         # method so that it can be overridden by the VestalVersions::Users feature.
         def version_attributes
-          now = Time.now.utc
-          { :number => last_version + 1, :changes => version_changes, :created_at => now, :updated_at => now }
+          { :model_changes => version_changes, :number => last_version+1 }
         end
     end
   end

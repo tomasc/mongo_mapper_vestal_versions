@@ -8,7 +8,7 @@ class UsersTest < Test::Unit::TestCase
     end
 
     should 'default to nil' do
-      @user.update_attributes(:first_name => 'Stephen')
+      @user.update_attribute(:first_name, 'Stephen')
       assert_nil @user.versions.last.user
     end
     

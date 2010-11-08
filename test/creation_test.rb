@@ -13,7 +13,7 @@ class CreationTest < Test::Unit::TestCase
     end
   
     should 'not increase when no changes are made in an update' do
-      @user.update_attributes({:name => @name})
+      @user.update_attribute(:name, @name)
       assert_equal @count, @user.versions.count
     end
   
@@ -21,23 +21,23 @@ class CreationTest < Test::Unit::TestCase
       @user.save
       assert_equal @count, @user.versions.count
     end
-  
+      
     context 'after an update' do
       setup do
-        @user.update_attributes({:last_name => 'Jobs'})
+        @user.update_attribute(:last_name, 'Jobs')
       end
-  
+      
       should 'increase by one' do
         assert_equal @count + 1, @user.versions.count
       end
     end
-  
+      
     context 'after multiple updates' do
       setup do
-        @user.update_attributes({:last_name => 'Jobs'})
-        @user.update_attributes({:last_name => 'Richert'})
+        @user.update_attribute(:last_name, 'Jobs')
+        @user.update_attribute(:last_name, 'Richert')
       end
-  
+      
       should 'increase multiple times' do
         assert_operator @count + 1, :<, @user.versions.count
       end
@@ -55,53 +55,53 @@ class CreationTest < Test::Unit::TestCase
         assert_does_not_contain @user.versions.last.changes.keys, timestamp
       end
     end
-  
+      
     context '(with :only options)' do
       setup do
         @only = %w(first_name)
         User.prepare_versioned_options(:only => @only)
-        @user.update_attributes({:name => 'Steven Tyler'})
+        @user.update_attribute(:name, 'Steven Tyler')
       end
-  
+      
       should 'only contain the specified columns' do
-        assert_equal @only, @user.versions.last.changes.keys
+        assert_equal @only, @user.versions.last.model_changes.keys
       end
-  
+      
       teardown do
         User.prepare_versioned_options(:only => nil)
       end
     end
-  
+      
     context '(with :except options)' do
       setup do
         @except = %w(first_name)
         User.prepare_versioned_options(:except => @except)
-        @user.update_attributes({:name => 'Steven Tyler'})
+        @user.update_attribute(:name, 'Steven Tyler')
       end
-  
+      
       should 'not contain the specified columns' do
         @except.each do |column|
-          assert_does_not_contain @user.versions.last.changes.keys, column
+          assert_does_not_contain @user.versions.last.model_changes.keys, column
         end
       end
-  
+      
       teardown do
         User.prepare_versioned_options(:except => nil)
       end
     end
-  
+      
     context '(with both :only and :except options)' do
       setup do
         @only = %w(first_name)
         @except = @only
         User.prepare_versioned_options(:only => @only, :except => @except)
-        @user.update_attributes({:name => 'Steven Tyler'})
+        @user.update_attribute(:name, 'Steven Tyler')
       end
-  
+      
       should 'respect only the :only options' do
-        assert_equal @only, @user.versions.last.changes.keys
+        assert_equal @only, @user.versions.last.model_changes.keys
       end
-  
+      
       teardown do
         User.prepare_versioned_options(:only => nil, :except => nil)
       end

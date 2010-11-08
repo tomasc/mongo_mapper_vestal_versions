@@ -14,6 +14,7 @@ class ReversionTest < Test::Unit::TestCase
           last_version.update_attributes(:created_at => time)
         end
         @times[@user.version] = time
+        @user.reload
       end
       @user.reload.versions.reload
       @first_version, @last_version = @attributes.keys.min, @attributes.keys.max
@@ -49,14 +50,14 @@ class ReversionTest < Test::Unit::TestCase
         assert_equal version, @user.version
       end
     end
-
+    
     should 'be able to target a version object' do
       @user.versions.each do |version|
         @user.revert_to(version)
         assert_equal version.number, @user.version
       end
     end
-
+    
     should "correctly roll back the model's attributes" do
       excluded = %w(created_at created_on updated_at updated_on versions)
       @attributes.each do |version, attributes|

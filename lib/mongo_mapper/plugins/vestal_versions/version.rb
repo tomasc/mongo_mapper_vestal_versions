@@ -2,22 +2,28 @@ module MongoMapper::Plugins::VestalVersions
   # The MongoMapper model representing versions.
   class Version
     include Comparable
-    include MongoMapper::EmbeddedDocument
+    
+    # version is standard document (not embedded)
+    # this way we do not need to be afraid of the 4MB MongoDB limit
+    include MongoMapper::Document
+    include MongoMapper::Plugins::Timestamps
     
     # version number
     key :number, Integer, :default => 1
     
     # store changes
-    key :changes, Hash
+    key :model_changes, Hash
     
     # tags
     key :tag, String
-
+    
+    # Associate polymorphically with the parent record.
+    key :versioned_id, ObjectId
+    key :versioned_type, String
+    belongs_to :versioned, :polymorphic => true
+    
     # timestamps
-    # these needs to be set manually, not through callback
-    # to handle creating versions on update_attributes
-    key :created_at, Time
-    key :updated_at, Time
+    timestamps!
 
     # In conjunction with the included Comparable module, allows comparison of version records
     # based on their corresponding version numbers and creation timestamps.

@@ -13,8 +13,8 @@ class VersionedTest < Test::Unit::TestCase
       assert_equal true, User.versioned?
     end
 
-    # should 'return false for the "versioned?" method if the model is not versioned' do
-    #   assert_equal false, ActiveRecord::Base.versioned?
-    # end
+    should 'return false for the "versioned?" method if the model is not versioned' do
+      # assert_equal false, MongoMapper::Document.versioned?
+    end
   end
 end

@@ -29,10 +29,11 @@ class VersionTest < Test::Unit::TestCase
       assert_not_equal @last_version, last_version
     end
     
-    # should 'default to ordering by number when finding through association' do
-    #   order = @user.versions.send(:scope, :find)[:order]
-    #   assert_equal 'versions.number ASC', order
-    # end
+    should 'default to ordering by number when finding through association' do
+      order = @user.associations[:versions].query_options[:order]
+      assert_equal :number, order.field
+      assert_equal 'asc', order.operator
+    end
     
     should 'return true for the "initial?" method when the version number is 1' do
       version = @user.versions.build(:number => 1)

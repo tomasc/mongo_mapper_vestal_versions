@@ -12,26 +12,29 @@ module MongoMapper::Plugins::VestalVersions
       from_number, to_number = number_at(from), number_at(to)
       return [] if from_number.nil? || to_number.nil?
 
-      condition = (from_number == to_number) ? [to_number] : Range.new(*[from_number, to_number].sort)
-      
-      if from_number > to_number
-        self.select{ |v| condition.include?(v.number) }.reverse
+      condition = (from_number == to_number) ? to_number : Range.new(*[from_number, to_number].sort)
+      if condition.is_a?(Range)
+        conditions = {'$gte' => condition.first, '$lte' => condition.last}
       else
-        self.select{ |v| condition.include?(v.number) }
+        conditions = condition
       end
+      all(
+        :number => conditions,
+        :order => "number #{(from_number > to_number) ? 'DESC' : 'ASC'}"
+      )
     end
 
     # Returns all version records created before the version associated with the given value.
     def before(value)
       return [] if (number = number_at(value)).nil?
-      self.select{ |v| v.number < number }
+      all(:number => {'$lt' => number})
     end
 
     # Returns all version records created after the version associated with the given value.
     # This is useful for dissociating records during use of the +reset_to!+ method.
     def after(value)
       return [] if (number = number_at(value)).nil?
-      self.select{ |v| v.number > number }
+      all(:number => {'$gt' => number})
     end
 
     # Returns a single version associated with the given value. The following formats are valid:
@@ -50,9 +53,9 @@ module MongoMapper::Plugins::VestalVersions
     #   untouched.
     def at(value)
       case value
-        when Date, Time then self.select{ |v| v.created_at <= value.to_time }.last
-        when Numeric then self.detect{ |v| v.number == value.floor }
-        when String then self.detect{ |v| v.tag == value }
+        when Date, Time then last(:created_at => { '$lte' => value.to_time })
+        when Numeric then find_by_number(value.floor)
+        when String then find_by_tag(value)
         when Symbol then respond_to?(value) ? send(value) : nil
         when Version then value
       end

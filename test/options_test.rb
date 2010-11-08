@@ -41,9 +41,9 @@ class OptionsTest < Test::Unit::TestCase
       assert_equal :delete_all, @prepared_options[:dependent]
     end
     
-    # should 'force the :as option value to :versioned' do
-    #   assert_equal :versioned, @prepared_options[:as]
-    # end
+    should 'force the :as option value to :versioned' do
+      assert_equal :versioned, @prepared_options[:as]
+    end
     
     should 'default to [VestalVersions::Versions] for :extend' do
       assert_equal [MongoMapper::Plugins::VestalVersions::Versions], @prepared_options[:extend]

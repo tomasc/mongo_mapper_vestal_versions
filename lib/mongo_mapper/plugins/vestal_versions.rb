@@ -99,3 +99,4 @@ module MongoMapper::Plugins::VestalVersions
 end
 
 # MongoMapper::Document.send(:include, MongoMapper::Plugins::VestalVersions)
+# MongoMapper::Document.append_inclusions(MongoMapper::Plugins::VestalVersions)

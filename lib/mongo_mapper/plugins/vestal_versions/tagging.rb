@@ -3,7 +3,7 @@ module MongoMapper::Plugins::VestalVersions
   # meaningful value to a version for the purpose of reversion.
   module Tagging
     def self.included(base) # :nodoc:
-      Version.send(:include, VersionMethods)
+      MongoMapper::Plugins::VestalVersions::Version.send(:include, VersionMethods)
 
       base.class_eval do
         include InstanceMethods

@@ -18,7 +18,8 @@ module MongoMapper::Plugins::VestalVersions
       # documentation for more details.
       def reset_to!(value)
         if saved = skip_version{ revert_to!(value) }
-          versions.delete_if{ |v| versions.after(value).include?(v) }
+          # versions.send(:delete_records, versions.after(value))
+          versions.after(value).each{|v|v.delete}
           reset_version
         end
         saved
